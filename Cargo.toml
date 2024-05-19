@@ -11,6 +11,10 @@ path = "src/bin/01_tcp_server/main.rs"
 name = "02"
 path = "src/bin/02_tcp_client/main.rs"
 
+[[bin]]
+name = "03"
+path = "src/bin/03_simple_future/main.rs"
+
 [dependencies]
 tokio = { version = "1", features = ["full"] }
 thiserror = "1.0.37"
