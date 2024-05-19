@@ -4,7 +4,8 @@ use std::pin::Pin;
 use std::sync::{Arc, Mutex};
 use std::task::{Context, Poll, Waker};
 use std::thread;
-use std::time::Duration;
+use std::time::{Duration, Instant};
+use tokio::runtime::Builder;
 
 #[derive(Debug)]
 pub struct SimpleFuture {
@@ -12,17 +13,20 @@ pub struct SimpleFuture {
 }
 
 impl SimpleFuture {
-    pub fn new() -> Self {
+    pub fn new(time: Duration) -> Self {
         let shared_state = Arc::new(Mutex::new(SharedState {
             completed: false,
             waker: None,
+            start_time: Instant::now(),
         }));
 
         let thread_shared_state = shared_state.clone();
+        // tokio::spawn
         thread::spawn(move || {
             println!("Starting a background thread");
 
-            thread::sleep(Duration::from_secs(5));
+            thread::sleep(time); // this would block a scheduler in tokio::spawn
+            // tokio::time::sleep(time).await; // this would not block a scheduler
 
             println!("Background thread completing the future");
 
@@ -45,6 +49,7 @@ impl SimpleFuture {
 struct SharedState {
     completed: bool,
     waker: Option<Waker>,
+    start_time: Instant,
 }
 
 impl Future for SimpleFuture {
@@ -55,7 +60,9 @@ impl Future for SimpleFuture {
 
         let mut shared_state = self.shared_state.lock().unwrap();
         if shared_state.completed {
-            println!("Future is already completed");
+            let taken_time = shared_state.start_time.elapsed().as_secs();
+
+            println!("Future is already completed, took {} seconds", taken_time);
 
             Poll::Ready(())
         } else {
@@ -67,17 +74,26 @@ impl Future for SimpleFuture {
     }
 }
 
-#[tokio::main]
-async fn main() -> Result<(), Error> {
+fn main() -> Result<(), Error> {
     println!("03 Simple Future");
 
-    let future = SimpleFuture::new();
+    let runtime = Builder::new_multi_thread()
+        .worker_threads(1) // specify the number of worker threads
+        .enable_all()
+        .build()
+        .unwrap();
 
-    println!("Future: {:?}", future);
+    runtime.block_on(async {
+        let future1 = SimpleFuture::new(Duration::from_secs(5));
+        let future2 = SimpleFuture::new(Duration::from_secs(10));
 
-    let res = future.await;
+        println!("Future1: {:?}", future1);
+        println!("Future2: {:?}", future2);
 
-    println!("Future returned : {:?}", res);
+        let res = tokio::join!(future1, future2);
+
+        println!("Future returned : {:?}", res);
+    });
 
     Ok(())
 }
