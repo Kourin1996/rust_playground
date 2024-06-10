@@ -26,7 +26,7 @@ impl SimpleFuture {
             println!("Starting a background thread");
 
             thread::sleep(time); // this would block a scheduler in tokio::spawn
-            // tokio::time::sleep(time).await; // this would not block a scheduler
+                                 // tokio::time::sleep(time).await; // this would not block a scheduler
 
             println!("Background thread completing the future");
 
@@ -39,9 +39,7 @@ impl SimpleFuture {
             });
         });
 
-        SimpleFuture {
-            shared_state,
-        }
+        SimpleFuture { shared_state }
     }
 }
 
@@ -97,4 +95,3 @@ fn main() -> Result<(), Error> {
 
     Ok(())
 }
-

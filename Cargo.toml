@@ -15,6 +15,18 @@ path = "src/bin/02_tcp_client/main.rs"
 name = "03"
 path = "src/bin/03_simple_future/main.rs"
 
+[[bin]]
+name = "04"
+path = "src/bin/04_thread_example/main.rs"
+
+[[bin]]
+name = "05"
+path = "src/bin/05_cell_example/main.rs"
+
+[[bin]]
+name = "06"
+path = "src/bin/06_mutex_example/main.rs"
+
 [dependencies]
 tokio = { version = "1", features = ["full"] }
 thiserror = "1.0.37"
