@@ -6,9 +6,9 @@ use std::time::Duration;
 fn main() {
     println!("Hello, World!");
 
-    // f1();
-    // f2();
-    // f3();
+    f1();
+    f2();
+    f3();
     f4();
 }
 
