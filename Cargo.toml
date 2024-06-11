@@ -27,6 +27,11 @@ path = "src/bin/05_cell_example/main.rs"
 name = "06"
 path = "src/bin/06_mutex_example/main.rs"
 
+[[bin]]
+name = "07"
+path = "src/bin/07_atomic_exampmle/main.rs"
+
+
 [dependencies]
 tokio = { version = "1", features = ["full"] }
 thiserror = "1.0.37"
