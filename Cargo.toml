@@ -31,7 +31,13 @@ path = "src/bin/06_mutex_example/main.rs"
 name = "07"
 path = "src/bin/07_atomic_exampmle/main.rs"
 
+[[bin]]
+name = "08"
+path = "src/bin/08_merkle_patricia_tree/main.rs"
 
 [dependencies]
 tokio = { version = "1", features = ["full"] }
 thiserror = "1.0.37"
+sha3 = "0.10"
+rlp = "0.5"
+hex = "0.4"
